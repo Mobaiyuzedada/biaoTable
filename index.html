@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>biao table</title>
+    <link rel="stylesheet" href="./css/biaoTable1.css">
+    <style>
+        .active {
+            background-color: lawngreen;
+        }
+
+        #order-table {
+            width: 60%;
+        }
+    </style>
+</head>
+
+<body>
+    <table id="b-table">
+
+    </table>
+    <table id="order-table"></table>
+
+</body>
+
+</html>
+<script src="C:\Users\28933\Desktop\biao-class\project\0002-myBtn\js\myBtn.js"></script>
+<script src="./js/biaoTable2.0.js"></script>
+<script>
+    //有delete highlight dicounted up down多个按钮
+    let orderStruct = {
+        oid: '订单号',
+        product: '产品',
+        totalCost: '总费用',
+    };
+
+    let orders = [
+        {
+            oid: '001',
+            product: '拖鞋',
+            totalCost: 70,
+        },
+        {
+            oid: '002',
+            product: '毛裤',
+            totalCost: 80,
+        },
+        {
+            oid: '003',
+            product: '枸杞',
+            totalCost: 90,
+        },
+    ];
+
+    let obj = {
+        Delete: {
+            name: '删除',
+            action: del,
+            // function (tr, index) {
+            //     // orders[index] = null;
+            //     // tr.remove();
+            // },
+            event: 'click',
+        },
+        Highlight: {
+            name: '高亮',
+            action: highlight,
+            event: 'click',
+        },
+        Discounted: {
+            name: '折扣',
+            action: function () {
+                console.log('2');
+            },
+            event: 'click',
+        },
+        Up: {
+            name: '上移',
+            action: up,
+            event: 'click',
+        },
+        Down: {
+            name: '下移',
+            action: down, highlight,
+            event: 'click',
+        },
+
+    }
+
+
+
+    // let table=document.getElementById('b-table');
+    // biaoTable.boot('#b-table', struct, users);
+    biaoTable.boot('#order-table', orderStruct, orders, obj
+    )
+    myBtn.boot();
+
+    function del(tr, index) {
+        orders[index] = null;
+        tr.remove();
+    }
+    /**
+     * 存在问题，无法和down搭配使用*/
+    function highlight(tr) {
+        console.log(tr );
+        let style = getComputedStyle(tr);
+        console.log(style.backgroundColor);
+        console.log(style.backgroundColor === "rgba(0, 0, 0, 0)");
+        style.backgroundColor === "rgba(0, 0, 0, 0)" ? tr.style.backgroundColor = "rgba(39, 228, 71, 1)" : tr.style.backgroundColor = "rgba(0, 0, 0, 0)";
+    }
+    
+    // function highlight(tr) {
+    //     if (tr.classList.contains('active'))
+    //         tr.classList.remove('active');
+    //     else
+    //         tr.classList.add('active');
+    // }
+    function up(tr, index) {      
+        let t;
+        if (index) {
+            t = orders[index];
+            orders[index] = orders[index - 1];
+            orders[index - 1] = t;
+        }
+        let prev = tr.previousElementSibling;
+        prev && prev.insertAdjacentElement('beforebegin', tr);
+
+        // biaoTable.boot('#order-table', orderStruct, orders, obj);
+        myBtn.boot();
+    }
+    function down(tr, index) {
+        let t;
+        if (index < orders.length - 1) {
+            t = orders[index];
+            orders[index] = orders[index + 1];
+            orders[index + 1] = t;
+        }
+        let next=tr.nextElementSibling;
+        next && next.insertAdjacentElement('afterend',tr)
+        myBtn.boot();
+    }
+
+</script>

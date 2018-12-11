@@ -1,0 +1,24 @@
+:root {
+    font-family: sans-serif;
+}
+h1 {
+    font-size: 25px;
+}
+.my-table{
+    border-collapse: collapse;
+    width: 70%;
+    margin-bottom: 20px;
+}
+.my-table th,
+.my-table td{
+    border:1px solid;
+    text-align: left;
+    padding: .5em;
+}
+#toolbar {
+    margin: .5em 0;
+}
+
+.add {
+    margin-left: 5em;
+}
