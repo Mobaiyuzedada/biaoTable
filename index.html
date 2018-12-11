@@ -19,9 +19,12 @@
 
 <body>
     <table id="b-table">
+        <tr>
+        </tr>
 
     </table>
     <table id="order-table"></table>
+    <button id="refresh">刷新</button>
 
 </body>
 
@@ -29,6 +32,7 @@
 <script src="./js/myBtn.js"></script>
 <script src="./js/biaoTable2.0.js"></script>
 <script>
+    let flag = true;
     //有delete highlight dicounted up down多个按钮
     let orderStruct = {
         oid: '订单号',
@@ -71,10 +75,8 @@
         },
         Discounted: {
             name: '折扣',
-            action: function () {
-                alert('还想折扣？吔屎啦');
-            },
-            event: 'click',
+            action: discount,
+            event: ['click', "dblclick"],
         },
         Up: {
             name: '上移',
@@ -87,6 +89,11 @@
             event: 'click',
         },
 
+        back:{
+            name:'上一步',
+            action:function(){},
+            event:'click',
+        }
     }
 
 
@@ -97,27 +104,32 @@
     )
     myBtn.boot();
 
+
+    //删除
     function del(tr, index) {
         orders[index] = null;
         tr.remove();
     }
-    /**
-     * 存在问题，无法和down搭配使用*/
-    function highlight(tr) {
-        console.log(tr );
-        let style = getComputedStyle(tr);
-        console.log(style.backgroundColor);
-        console.log(style.backgroundColor === "rgba(0, 0, 0, 0)");
-        style.backgroundColor === "rgba(0, 0, 0, 0)" ? tr.style.backgroundColor = "rgba(39, 228, 71, 1)" : tr.style.backgroundColor = "rgba(0, 0, 0, 0)";
-    }
-    
+
+
+
+    //高亮
     // function highlight(tr) {
-    //     if (tr.classList.contains('active'))
-    //         tr.classList.remove('active');
-    //     else
-    //         tr.classList.add('active');
+    //     console.log(tr);
+    //     let style = getComputedStyle(tr);
+    //     console.log(style.backgroundColor);
+    //     console.log(style.backgroundColor === "rgba(0, 0, 0, 0)");
+    //     style.backgroundColor === "rgba(0, 0, 0, 0)" ? tr.style.backgroundColor = "rgba(39, 228, 71, 1)" : tr.style.backgroundColor = "rgba(0, 0, 0, 0)";
     // }
-    function up(tr, index) {      
+    function highlight(tr) {
+        if (tr.classList.contains('active'))
+            tr.classList.remove('active');
+        else
+            tr.classList.add('active');
+    }
+
+    //上移
+    function up(tr, index) {
         let t;
         if (index) {
             t = orders[index];
@@ -130,6 +142,8 @@
         // biaoTable.boot('#order-table', orderStruct, orders, obj);
         myBtn.boot();
     }
+
+    //下移
     function down(tr, index) {
         let t;
         if (index < orders.length - 1) {
@@ -137,9 +151,34 @@
             orders[index] = orders[index + 1];
             orders[index + 1] = t;
         }
-        let next=tr.nextElementSibling;
-        next && next.insertAdjacentElement('afterend',tr)
+        let next = tr.nextElementSibling;
+        next && next.insertAdjacentElement('afterend', tr)
         myBtn.boot();
     }
 
+    //打折
+    function discount(tr, index) {
+        if (event.type === "dblclick") {//双击打折
+            alert("行⑧，你厉害，给你折扣");
+            let oldPrice = orders[index].totalCost
+            let newPrice = oldPrice * .5;
+            // tr.cells[2].style.color="red";
+            // tr.cells[2].innerText=newPrice;
+            tr.cells[2].innerHTML = `
+                    <s>${oldPrice}</s>
+                    <span style="color:red">${newPrice}</span>
+                    `;
+            flag = true;
+        }
+        else {
+            if (flag) {
+                alert("还想打折？手给你打折");
+                flag = false;
+            }
+        }
+    }//想让一定时间内只执行一次，还需要后续完善
+
+    refresh.addEventListener('click',()=>{
+        window.location.reload();
+    })
 </script>
