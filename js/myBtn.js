@@ -5,7 +5,7 @@ window.myBtn={
 // document.write("<script language=javascript src='C:/Users/28933/Desktop/biao-class/project/0001-dynamicLoadCss/dynamicLoadCss.js'></script>");
 
 function boot(selec){
-    let url="C:/Users/28933/Desktop/web/biao-project/005-plugin-biaoTable/css/btn.css";
+    let url="./css/btn.css";
     changeBtnStyle();
     dynamicLoadCss(url);
 }
