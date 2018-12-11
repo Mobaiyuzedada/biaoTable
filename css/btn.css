@@ -1,0 +1,18 @@
+.my-btn{
+    background: #fff;
+    border:1px solid rgb(197, 196, 197);
+    border-radius: 3px;
+    padding: 4px 8px 1px 8px;
+    box-shadow: 1px 1px 2px rgba(198, 197, 198,.1);
+    outline: none;
+    cursor: pointer;
+}
+.my-btn:hover{
+    outline:none;
+    border:1px solid #999;
+}
+.my-btn:active{
+    outline:none;
+    border:1px solid #999;
+    cursor: default;
+}
