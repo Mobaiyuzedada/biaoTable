@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>biao table</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=0" >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=0">
     <link rel="stylesheet" href="./css/biaoTable1.css">
     <!-- <link rel="stylesheet" href="../005-plugin-biaoTable/css/btn.css"> -->
     <style>
@@ -24,6 +24,7 @@
         </tr>
 
     </table>
+
     <table id="order-table"></table>
     <button id="refresh">刷新</button>
 
@@ -31,9 +32,11 @@
 
 </html>
 <script src="./js/myBtn.js"></script>
-<script src="./js/biaoTable2.0.js"></script>
+<!-- <script src="C:\Users\28933\Desktop\biao-class\project\0002-myBtn\js\myBtn.js"></script> -->
+<script src="./js/biaoTable3.0.js"></script>
 <script>
-    let flag = true;
+    let flagD = true;//控制折扣
+    let flagC = true;//控制更改
     //有delete highlight dicounted up down多个按钮
     let orderStruct = {
         oid: '订单号',
@@ -89,21 +92,48 @@
             action: down, highlight,
             event: 'click',
         },
-
-        back:{
-            name:'上一步',
-            action:function(){},
-            event:'click',
-        }
     }
 
-
-
-    // let table=document.getElementById('b-table');
+    let obj1 = {
+        Change: {
+            name: '更改',
+            action: change,
+            event: 'click',
+        }
+    }
+    let obj2 = Object.assign({}, obj, obj1);
     // biaoTable.boot('#b-table', struct, users);
-    biaoTable.boot('#order-table', orderStruct, orders, obj
-    )
+    biaoTable.boot('#order-table', orderStruct, orders, obj2)
     myBtn.boot();
+
+
+
+
+    //更改
+    function change(tr, index) {
+        if (flagC === true) {
+            let i = 0;
+            for (key in orders[index]) {
+                tr.cells[i].innerHTML = `
+            <input type="text" name="${key}" value="${orders[index][key]}">
+            `;
+                tr.cells[i].addEventListener('change', () => { });
+                i++;
+            }
+            flagC = false;
+        } else {
+            let i = 0;
+            let newInput = getInput(tr);
+            for (let key in newInput) {
+                tr.cells[i].innerHTML = `
+                <td>${newInput[key]}</td>
+                `
+                i++;
+            }
+            flagC = true;
+            orders[index] = newInput;
+        }
+    }
 
 
     //删除
@@ -169,21 +199,37 @@
                     <s>${oldPrice}</s>
                     <span style="color:red">${newPrice}</span>
                     `;
-            flag = -1;
-            console.log(flag );
+            flagD = -1;
         }
         else {
-            console.log(flag );
-            if (flag===true) {
+            if (flagD === true) {
                 alert("想打折？手给你打折");
-                flag = false;
-            }else if(flag===-1){
+                flagD = false;
+            } else if (flagD === -1) {
                 alert("已经打折了还点个鸡⑧")
             }
         }
     }//想让一定时间内只执行一次，还需要后续完善
 
-    refresh.addEventListener('click',()=>{
+    refresh.addEventListener('click', () => {
         window.location.reload();
     })
+
+
+
+
+
+
+
+
+    //获取输入框内的数据
+    function getInput(tr) {
+        let inputs = tr.querySelectorAll('input');
+        let newElem = {};
+        inputs.forEach(el => {
+            newElem[el.name] = el.value;
+        })
+        return newElem;
+
+    }
 </script>

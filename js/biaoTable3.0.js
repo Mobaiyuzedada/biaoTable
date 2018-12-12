@@ -6,8 +6,12 @@
     };
 
     let table, thead, tbody, structure, list, ops;
-    let c='';
-
+    let c = '';
+    // let DefaultConfig={
+    //     name:null,
+    //     action:null,
+    //     event:'click',
+    // }
     /**
      * 
      * @param {string} tableSelector 
@@ -16,7 +20,10 @@
      * @param {Object} ops
      */
     function boot(tableSelector, struct, data, operations) {
+
+
         structure = struct; list = data; ops = operations;
+        // ops =Object.assign({},operations,DefaultConfig) ;
 
         table = document.querySelector(tableSelector);
         table.classList.add('my-table');
@@ -26,7 +33,7 @@
     }
 
     function render() {
-        table.innerHTML='';
+        table.innerHTML = '';
         renderHead();
         renderBody();
     }
@@ -37,8 +44,8 @@
         for (let key in structure) {
             html += `<th>${structure[key]}</th>`
         }
-        if(ops){
-            html+=`<th>操作</th>`;
+        if (ops) {
+            html += `<th>操作</th>`;
         }
         thead = document.createElement('thead');
         thead.innerHTML = html;
@@ -54,24 +61,34 @@
     function renderBody() {
         tbody = document.createElement('tbody');
         table.appendChild(tbody);
-        list.forEach((it,index) => {//index返回给插件调用者
+        list.forEach((it, index) => {//index返回给插件调用者
             let tr = document.createElement('tr');
             for (let key in structure) {
                 tr.innerHTML += `<td>${it[key] || '-'}</td>`;
             }
-            if(ops){
-                let td='';
-                for(let action in ops){
-                    td+=`<button class=${action}>${ops[action].name}</button>`;     
+            if (ops) {
+                let td = '';
+                for (let action in ops) {
+                    td += `<button class=${action}>${ops[action].name}</button>`;
                 }
-                tr.innerHTML+=`<td>${td}</td>`;
+                tr.innerHTML += `<td>${td}</td>`;
 
                 //为每个按钮绑定事件
-                for(let key in ops){
-                    tr.querySelector('.'+key)
-                    .addEventListener(ops[key].event,()=>{
-                        ops[key].action(tr,index);//回传正在循环的data的索引和该行的元素tr
-                    })
+                for (let key in ops) {
+                    //先判断有几个event事件
+                    if (Array.isArray(ops[key].event)) {
+                        ops[key].event.forEach(it => {
+                                tr.querySelector('.' + key)
+                                    .addEventListener(it, () => {
+                                        ops[key].action(tr, index);//回传正在循环的data的索引和该行的元素tr
+                                    });
+                            });
+                        }else {
+                        tr.querySelector('.' + key)
+                            .addEventListener(ops[key].event, () => {
+                                ops[key].action(tr, index);
+                            });
+                    }
                 }
             }
             tbody.appendChild(tr);
